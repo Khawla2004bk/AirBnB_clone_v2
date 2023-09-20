@@ -18,13 +18,13 @@ class FileStorage:
     def all(self, cls=None):
         """Returns a dictionary of models currently in storage"""
         dictionary = {}
+        dictn = self.__objects
         if cls is not None:
-            dictn = self.__objects
-        for k in dictn:
-            part = k.replace('.', ' ')
-            part = shlex.split(part)
-            if (part[0] == cls.__name__):
-            dictionary[k] = self.__objects[k]
+            for k in dictn:
+                part = k.replace('.', ' ')
+                part = shlex.split(part)
+                if (part[0] == cls.__name__):
+                    dictionary[k] = self.__objects[k]
         return dictionary
 
     def new(self, obj):
@@ -68,4 +68,8 @@ class FileStorage:
         """delete obj from __objects if it is inside"""
         if obj is not None:
             k = "{}.{}".format(type(obj).__name__, obj.id)
-            del FileStorage.__objects[k]
+            if k in FileStorage.__objects:
+                print("Deleting key:", k)
+                del FileStorage.__objects[k]
+            else:
+                print("Key not found:", k)
