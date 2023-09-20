@@ -1,7 +1,7 @@
 #!/usr/bin/python3
 """ Place Module for HBNB project """
 from models.base_model import BaseModel, Base
-from sqlalchemy import Column, String, Integer, Float, ForeignKey
+from sqlalchemy import Column, String, Integer, Float, ForeignKey, Table
 from sqlalchemy.orm import relationship
 from os import getenv
 
@@ -20,7 +20,8 @@ class Place(BaseModel, Base):
     latitude = Column(Float)
     longitude = Column(Float)
     if getenv('HBNB_TYPE_STORAGE') == 'db':
-        reviews = relationship('Review', back_populates='place')
+        reviews = relationship('Review', back_populates='place',
+            cascade="all, delete-orphan")
     else:
         @property
         def reviews(self):
