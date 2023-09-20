@@ -1,6 +1,5 @@
 #!/usr/bin/python3
 from models.user import User
-from models.state import State
 from models.city import City
 from models.amenity import Amenity
 from models.place import Place
@@ -31,6 +30,7 @@ class DBStorage:
 
     def all(self, cls=None):
         """Query all objects"""
+        from models.state import State
         obj = {}
         if cls is None:
             clist = [User, State, City, Amenity, Place, Review]
