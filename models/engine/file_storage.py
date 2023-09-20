@@ -17,17 +17,14 @@ class FileStorage:
 
     def all(self, cls=None):
         """Returns a dictionary of models currently in storage"""
-        if cls is None:
-            return FileStorage.__objects
-        clas = cls.__name__
         dictionary = {}
-        key = list(FileStorage.__objects__.keys())
-        i = 0
-        while i < len(key):
-            k = key[i]
-            if k.split(.)[0] == clas:
-                dictionary[k] = FileStorage.__objects[k]
-            i += 1
+        if cls is not None:
+            dictn = FileStorage.__objects
+        for k in dictn:
+            part = k.replace('.', ' ')
+            part = shlex.split(part)
+            if (part[0] == cls.__name__):
+            dictionary[k] = FileStorage.__objects[k]
         return dictionary
 
     def new(self, obj):
