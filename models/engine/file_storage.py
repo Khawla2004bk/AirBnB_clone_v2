@@ -19,12 +19,12 @@ class FileStorage:
         """Returns a dictionary of models currently in storage"""
         dictionary = {}
         if cls is not None:
-            dictn = FileStorage.__objects
+            dictn = self.__objects
         for k in dictn:
             part = k.replace('.', ' ')
             part = shlex.split(part)
             if (part[0] == cls.__name__):
-            dictionary[k] = FileStorage.__objects[k]
+            dictionary[k] = self.__objects[k]
         return dictionary
 
     def new(self, obj):
