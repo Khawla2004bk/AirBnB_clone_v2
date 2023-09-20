@@ -1,18 +1,52 @@
 #!/usr/bin/python3
 """ Place Module for HBNB project """
 from models.base_model import BaseModel
+from sqlalchemy import Column, String, Integer, Float, ForeignKey
+from sqlalchemy.orm import relationship
+from os import getenv
 
 
-class Place(BaseModel):
+class Place(BaseModel, Base):
     """ A place to stay """
-    city_id = ""
-    user_id = ""
-    name = ""
-    description = ""
-    number_rooms = 0
-    number_bathrooms = 0
-    max_guest = 0
-    price_by_night = 0
-    latitude = 0.0
-    longitude = 0.0
-    amenity_ids = []
+    city_id = Column(String(60),ForeignKey('cities.id'), nullable=False)
+    user_id = Column(String(60), ForeignKey('users.id'), nullable=False)
+    name = Column(String(128), nullable=False)
+    description = Column(Integer, nullable=False, default=0)
+    number_rooms = Column(Integer, nullable=False, default=0)
+    number_bathrooms = Column(Integer, nullable=False, default=0)
+    max_guest = Column(Integer, nullable=False, default=0)
+    price_by_night = Column(Integer, nullable=False, default=0)
+    latitude = Column(Float)
+    longitude = Column(Float)
+    if getenv('HBNB_TYPE_STORAGE') == 'db':
+        reviews = relationship('Review', back_populates='place')
+    else:
+        @property
+        def reviews(self):
+            """ Getter for reviews attribute """
+            from models import storage
+            from models.review import Review
+            reviews_dict = storage.all(Review)
+            place_reviews = []
+            for review in reviews_dict.values():
+                if review.place_id == self.id:
+                    place_reviews.append(review)
+            return place_reviews
+
+    @property
+    def amenities(self):
+        """ Getter for amenities attribute """
+        from models import storage
+        from models.amenity import Amenity
+        amenities_dict = storage.all(Amenity)
+        place_amenities = []
+        for amenity in amenities_dict.values():
+            if amenity.id in self.amenity_ids:
+                place_amenities.append(amenity)
+        return place_amenities
+
+    @amenities.setter
+    def amenities(self, obj):
+        """ Setter for amenities attribute """
+        if isinstance(obj, Amenity):
+            self.amenity_ids.append(obj.id)
