@@ -117,13 +117,13 @@ class HBNBCommand(cmd.Cmd):
         """ Create an object of any class"""
         if not args:
             raise SyntaxError("No argument provided")
-        
+
         arglist = args.split()
         claname = arglist[0]
-        
+
         if claname not in HBNBCommand.classes:
             raise NameError("Class doesn't exist")
- 
+
         arglist = arglist[1:]
         par = {}
 
@@ -136,7 +136,7 @@ class HBNBCommand(cmd.Cmd):
             k, val = k_val
             if val.startswith('"') and val.endswith('"'):
                 val = val[1:-1].replace('\\"', '"').replace("_", " ")
-            
+
             if '.' in val:
                 val = float(val)
             else:
@@ -144,13 +144,12 @@ class HBNBCommand(cmd.Cmd):
                     val = int(val)
                 except ValueError:
                     pass
-        
+
             setattr(new_inst, k, val)
-        
+
         storage.save()
-        
+
         print(new_inst.id)
-    
 
     def help_create(self):
         """ Help information for the create method """
@@ -345,6 +344,7 @@ class HBNBCommand(cmd.Cmd):
         """ Help information for the update class """
         print("Updates an object with new information")
         print("Usage: update <className> <id> <attName> <attVal>\n")
+
 
 if __name__ == "__main__":
     HBNBCommand().cmdloop()
